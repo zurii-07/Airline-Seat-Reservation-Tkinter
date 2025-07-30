@@ -1,9 +1,8 @@
 import tkinter as tk
+from gui.login_gui import LoginWindow
 
-#Tkinter Test
-root = tk.Tk()
-root.title("Tkinter Test")
-root.geometry("700x500")
-label = tk.Label(root, text="Hello Tkinter!")
-label.pack()
-root.mainloop()
+#Launcher for Login GUI;
+if __name__ == '__main__':
+    root = tk.Tk()
+    app = LoginWindow(root)
+    root.mainloop()
