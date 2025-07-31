@@ -1,41 +1,84 @@
-import tkinter as tk #Importing python GUI toolkit
-from tkinter import messagebox #for pop-up dialogs
-from backend import user_manager #connecting to functions from the backend
+import tkinter as tk
+from tkinter import messagebox
+from backend import user_manager
+from PIL import Image, ImageTk
+import os
+import glob
 
-class LoginWindow: #When launched, passed to the Tk window.
+class LoginWindow:
     def __init__(self, root):
         self.root = root
-        self.root.title("Airline Reservation Login") #window title
+        self.root.title("Airline Reservation Login")
+        self.root.state("zoomed")
+        self.root.update_idletasks()
 
-        #Labels & entry fields
-        tk.Label(root, text="Username:").grid(row=0, column=0, pady=5)
-        tk.Label(root, text="Password:").grid(row=1, column=0, pady=5)
+        self.bg_images = self.load_images()
+        self.bg_index = 0
 
+        # === Canvas ===
+        self.canvas = tk.Canvas(root, highlightthickness=0)
+        self.canvas.pack(fill="both", expand=True)
+
+        self.bg_label = self.canvas.create_image(0, 0, anchor="nw")
+        self.update_background()  # Start slideshow
+
+        # === Entry widgets ===
         self.username_entry = tk.Entry(root)
         self.password_entry = tk.Entry(root, show="*")
 
-        self.username_entry.grid(row=0, column=1)
-        self.password_entry.grid(row=1, column=1)
+        self.canvas.create_window(700, 250, window=tk.Label(root, text="Username:", font=("Arial", 12, "bold")))
+        self.canvas.create_window(850, 250, window=self.username_entry)
+        self.canvas.create_window(700, 290, window=tk.Label(root, text="Password:", font=("Arial", 12, "bold")))
+        self.canvas.create_window(850, 290, window=self.password_entry)
 
-        #Buttons to perform tasks
-        tk.Button(root, text="Login", command=self.login).grid(row=2, column=0, pady=10)
-        tk.Button(root, text="Register", command=self.open_registration).grid(row=2, column=1, pady=10)
+        # === Buttons ===
+        self.canvas.create_window(770, 350, window=tk.Button(root, text="Login", width=10, command=self.login))
+        self.canvas.create_window(870, 350, window=tk.Button(root, text="Register", width=10, command=self.open_registration))
 
-    #Method for login
+    def load_images(self):
+        assets_dir = os.path.join(os.path.dirname(__file__), '..', 'assets')
+        image_files = glob.glob(os.path.join(assets_dir, '*.jpg'))
+        return image_files
+
+    def update_background(self):
+        if not self.bg_images:
+            return
+
+        # Load and resize current image
+        image_path = self.bg_images[self.bg_index]
+        img = Image.open(image_path)
+
+        # Get current window size for dynamic fit
+        width = self.root.winfo_width()
+        height = self.root.winfo_height()
+
+        img = img.resize((width, height), Image.Resampling.LANCZOS)
+        self.bg_photo = ImageTk.PhotoImage(img)
+
+        # Update canvas background
+        self.canvas.itemconfig(self.bg_label, image=self.bg_photo)
+        self.canvas.tag_lower(self.bg_label)  # Ensure background is behind widgets
+
+        # Prepare next image
+        self.bg_index = (self.bg_index + 1) % len(self.bg_images)
+
+        # Loop every 2 seconds
+        self.root.after(2000, self.update_background)
+
     def login(self):
         username = self.username_entry.get()
         password = self.password_entry.get()
         if user_manager.authenticate_user(username, password):
             messagebox.showinfo("Login Successful", f"Welcome {username}!")
-            self.root.destroy()  # Closes login window
-            # Here load the next window (flight selection)
+            self.root.destroy()
+            # Launch next screen
         else:
             messagebox.showerror("Login Failed", "Incorrect username or password.")
 
-    #Method for registration
     def open_registration(self):
         reg_window = tk.Toplevel(self.root)
         reg_window.title("Register New User")
+        reg_window.geometry("400x250")
 
         tk.Label(reg_window, text="Username:").grid(row=0, column=0, pady=5)
         tk.Label(reg_window, text="Password:").grid(row=1, column=0, pady=5)
@@ -52,7 +95,6 @@ class LoginWindow: #When launched, passed to the Tk window.
         fullname_entry.grid(row=2, column=1)
         email_entry.grid(row=3, column=1)
 
-        #Inner function for registration
         def register():
             username = username_entry.get()
             password = password_entry.get()
@@ -66,4 +108,3 @@ class LoginWindow: #When launched, passed to the Tk window.
                 messagebox.showerror("Registration Failed", message)
 
         tk.Button(reg_window, text="Register", command=register).grid(row=4, column=0, columnspan=2, pady=10)
-
