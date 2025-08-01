@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.ttk as ttk
 from tkinter import messagebox
 from backend import user_manager
 from PIL import Image, ImageTk
@@ -23,17 +24,56 @@ class LoginWindow:
         self.update_background()  # Start slideshow
 
         # === Entry widgets ===
-        self.username_entry = tk.Entry(root)
-        self.password_entry = tk.Entry(root, show="*")
+        # === Fonts ===
+        font_title = ("Segoe UI", 24, "bold")
+        font_label = ("Segoe UI", 12)
+        font_button = ("Segoe UI", 10, "bold")
 
-        self.canvas.create_window(700, 250, window=tk.Label(root, text="Username:", font=("Arial", 12, "bold")))
-        self.canvas.create_window(850, 250, window=self.username_entry)
-        self.canvas.create_window(700, 290, window=tk.Label(root, text="Password:", font=("Arial", 12, "bold")))
-        self.canvas.create_window(850, 290, window=self.password_entry)
+        # === Center Point ===
+        center_x = self.root.winfo_screenwidth() // 2
+
+        # === Title Label ===
+        self.canvas.create_text(center_x, 100, text="Welcome to FlightForge Airline Seat Reservations",
+                                font=font_title, fill="white")
+
+        # === Entries & Labels Centered ===
+        # === Fonts ===
+        font_title = ("Segoe UI", 24, "bold")
+        font_label = ("Segoe UI", 12)
+        font_button = ("Segoe UI", 10, "bold")
+
+        # === Center Position ===
+        self.root.update_idletasks()
+        center_x = self.root.winfo_screenwidth() // 2
+        center_y = self.root.winfo_screenheight() // 2
+
+        # === Title ===
+        # self.canvas.create_text(center_x, center_y - 150,
+        #                         text="✈️ Welcome to FlightForge Airline Seat Reservations",
+        #                         font=font_title, fill="white")
+
+        # === Entry Fields ===
+        self.username_entry = tk.Entry(root, font=font_label, width=30)
+        self.password_entry = tk.Entry(root, show="*", font=font_label, width=30)
+
+        self.canvas.create_text(center_x - 120, center_y - 60,
+                                text="Username:", font=font_label, fill="white", anchor="e")
+        self.canvas.create_window(center_x + 10, center_y - 60,
+                                  window=self.username_entry, anchor="w")
+
+        self.canvas.create_text(center_x - 120, center_y - 20,
+                                text="Password:", font=font_label, fill="white", anchor="e")
+        self.canvas.create_window(center_x + 10, center_y - 20,
+                                  window=self.password_entry, anchor="w")
 
         # === Buttons ===
-        self.canvas.create_window(770, 350, window=tk.Button(root, text="Login", width=10, command=self.login))
-        self.canvas.create_window(870, 350, window=tk.Button(root, text="Register", width=10, command=self.open_registration))
+        btn_login = tk.Button(root, text="Login", font=font_button, width=12,
+                              command=self.login, bg="#2E86C1", fg="white")
+        btn_register = tk.Button(root, text="Register", font=font_button, width=12,
+                                 command=self.open_registration, bg="#117A65", fg="white")
+
+        self.canvas.create_window(center_x - 50, center_y + 40, window=btn_login)
+        self.canvas.create_window(center_x + 70, center_y + 40, window=btn_register)
 
     def load_images(self):
         assets_dir = os.path.join(os.path.dirname(__file__), '..', 'assets')
@@ -63,7 +103,7 @@ class LoginWindow:
         self.bg_index = (self.bg_index + 1) % len(self.bg_images)
 
         # Loop every 2 seconds
-        self.root.after(2000, self.update_background)
+        self.root.after(4000, self.update_background)
 
     def login(self):
         username = self.username_entry.get()
