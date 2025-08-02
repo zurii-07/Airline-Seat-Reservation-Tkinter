@@ -6,8 +6,9 @@ import os
 import glob
 
 class LoginWindow: #When launched, passes to the Tk window.
-    def __init__(self, root):
+    def __init__(self, root, on_login_success):
         self.root = root
+        self.on_login_success = on_login_success
         self.root.title("Airline Reservation Login")
         self.root.state("zoomed")
         self.root.update_idletasks()
@@ -92,7 +93,7 @@ class LoginWindow: #When launched, passes to the Tk window.
 
         if user_manager.authenticate_user(username, password):
             messagebox.showinfo("Login Successful", f"Welcome {username}!")
-            self.root.destroy()
+            self.on_login_success()  # Launch main app
         else:
             messagebox.showerror("Login Failed", "Incorrect username or password.")
 
