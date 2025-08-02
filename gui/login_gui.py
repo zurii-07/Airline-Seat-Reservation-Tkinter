@@ -103,7 +103,7 @@ class LoginWindow: #When launched, passes to the Tk window.
         reg_window.resizable(False, False)
 
         # === Load Background Image from "assets 2" ===
-        bg_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets 2', 'Portal.jpg')
+        bg_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets 2', 'Shield.jpg')
         bg_img = Image.open(bg_image_path)
         bg_img = bg_img.resize((900, 500), Image.Resampling.LANCZOS)
         bg_photo = ImageTk.PhotoImage(bg_img)
