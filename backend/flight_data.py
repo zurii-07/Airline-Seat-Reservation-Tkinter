@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 def load_airports():
     path = os.path.join(os.path.dirname(__file__), '..', 'data', 'airports.csv')
     airports = []
-    with open(path, newline='') as f:
+    with open(path, encoding="utf-8", newline='') as f:
         reader = csv.DictReader(f)
         for r in reader:
             airports.append(r)
@@ -20,16 +20,16 @@ def generate_flights(days_ahead=7):
         dt = now + timedelta(days=i)
         for origin in airports:
             for dest in airports:
-                if origin['country'] == dest['country']:
+                if origin['Country'] == dest['Country']:
                     continue
                 flight = {
                     'flight_id': f"FL{idx:04d}",
                     'date': dt.strftime("%Y-%m-%d"),
                     'time': f"{10 + (idx % 10):02d}:00",  # sample times
-                    'origin_country': origin['country'],
-                    'origin_airport': origin['airport'],
-                    'dest_country': dest['country'],
-                    'dest_airport': dest['airport']
+                    'origin_country': origin['Country'],
+                    'origin_airport': origin['Airport'],
+                    'dest_country': dest['Country'],
+                    'dest_airport': dest['Airport']
                 }
                 flights.append(flight)
                 idx += 1
