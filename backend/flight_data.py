@@ -24,7 +24,7 @@ def generate_flights(days_ahead=7):
                     continue
                 flight = {
                     'flight_id': f"FL{idx:04d}",
-                    'date': dt.strftime("%Y-%m-%d"),
+                    'date': dt.strftime("%Y-%m-%d"), #upcomming 7 days from the current day
                     'time': f"{10 + (idx % 10):02d}:00",  # sample times
                     'origin_country': origin['Country'],
                     'origin_airport': origin['Airport'],
