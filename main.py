@@ -14,3 +14,9 @@ if __name__ == '__main__':
 
     login = LoginWindow(root, on_login_success)
     root.mainloop()
+
+def run_login_again():
+    root = tk.Tk()
+    login = LoginWindow(root, on_login_success)
+    root.mainloop()
+

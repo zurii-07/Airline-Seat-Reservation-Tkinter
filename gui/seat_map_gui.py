@@ -6,6 +6,7 @@ class SeatMapFrame(tk.Frame):
     def __init__(self, master, flight, on_back):
         super().__init__(master)
         self.master = master
+        self.master.state("zoomed")
         self.flight = flight
         self.on_back = on_back
         self.pack(fill='both', expand=True)
