@@ -37,9 +37,15 @@ class SeatMapFrame(tk.Frame):
         self.container.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
         canvas.create_window((0, 0), window=self.container, anchor="nw")
 
-        # === Main UI Blocks Inside Scrollable Area ===
-        self.seat_frame = tk.Frame(self.container)
-        self.seat_frame.pack(pady=(10, 0))
+        # === Centered Horizontal Layout ===
+        self.center_frame = tk.Frame(self.container)
+        self.center_frame.pack(pady=10)
+
+        self.grid_frame = tk.Frame(self.center_frame)
+        self.grid_frame.pack(anchor="center")
+
+        self.seat_frame = tk.Frame(self.grid_frame)
+        self.seat_frame.pack(side="left", anchor="n", padx=(0, 30))
 
         self.form_frame = None
 
@@ -47,12 +53,12 @@ class SeatMapFrame(tk.Frame):
 
     def draw_seats(self):
         self.seat_frame.destroy()
-        self.seat_frame = tk.Frame(self.container)
-        self.seat_frame.pack(pady=10)
+        self.seat_frame = tk.Frame(self.grid_frame)
+        self.seat_frame.pack(side="left", anchor="n", padx=(0, 30))
 
         rows = [str(i) for i in range(1, 21)]
         cols = list("ABCDEFGHI")
-        groupings = [cols[0:3], cols[3:6], cols[6:9]]  # ABC DEF GHI
+        groupings = [cols[0:3], cols[3:6], cols[6:9]]
 
         # === Cockpit ===
         tk.Label(self.seat_frame, text="Cockpit", font=("Arial", 12, "italic")).grid(
@@ -112,29 +118,33 @@ class SeatMapFrame(tk.Frame):
         if self.form_frame:
             self.form_frame.destroy()
 
-        self.form_frame = tk.Frame(self.container)
-        self.form_frame.pack(pady=20)
+        self.form_frame = tk.Frame(self.grid_frame, bd=2, relief="groove", padx=10, pady=10, bg="white")
+        self.form_frame.pack(side="right", anchor="n", padx=10)
 
-        tk.Label(self.form_frame, text=f"Booking Seat: {seat_id}", font=("Segoe UI", 12, "bold")).grid(
+        tk.Label(self.form_frame, text=f"Booking Seat: {seat_id}", font=("Segoe UI", 12, "bold"), bg="white").grid(
             row=0, column=0, columnspan=2, pady=(0, 10)
         )
 
         # === Form Fields ===
-        tk.Label(self.form_frame, text="Full Name:").grid(row=1, column=0, sticky='e', padx=5, pady=2)
-        name_entry = tk.Entry(self.form_frame, width=30)
-        name_entry.grid(row=1, column=1)
+        def label(text, row):
+            return tk.Label(self.form_frame, text=text, bg="white").grid(row=row, column=0, sticky='e', padx=5, pady=2)
 
-        tk.Label(self.form_frame, text="Gender (M/F):").grid(row=2, column=0, sticky='e', padx=5, pady=2)
-        gender_entry = tk.Entry(self.form_frame, width=10)
-        gender_entry.grid(row=2, column=1, sticky='w')
+        def entry(row, width=30):
+            e = tk.Entry(self.form_frame, width=width)
+            e.grid(row=row, column=1)
+            return e
 
-        tk.Label(self.form_frame, text="Passport No:").grid(row=3, column=0, sticky='e', padx=5, pady=2)
-        passport_entry = tk.Entry(self.form_frame, width=30)
-        passport_entry.grid(row=3, column=1)
+        label("Full Name:", 1)
+        name_entry = entry(1)
 
-        tk.Label(self.form_frame, text="Visa No:").grid(row=4, column=0, sticky='e', padx=5, pady=2)
-        visa_entry = tk.Entry(self.form_frame, width=30)
-        visa_entry.grid(row=4, column=1)
+        label("Gender (M/F):", 2)
+        gender_entry = entry(2, width=10)
+
+        label("Passport No:", 3)
+        passport_entry = entry(3)
+
+        label("Visa No:", 4)
+        visa_entry = entry(4)
 
         def confirm():
             name = name_entry.get().strip()
@@ -159,7 +169,6 @@ class SeatMapFrame(tk.Frame):
 
             self.form_frame.destroy()
             self.form_frame = None
-
             self.draw_seats()
 
         tk.Button(self.form_frame, text="Confirm Booking", command=confirm,
