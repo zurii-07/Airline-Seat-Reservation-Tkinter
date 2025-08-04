@@ -99,7 +99,7 @@ class LoginWindow:
 
             self.root.quit()
             self.root.destroy()
-            self.on_login_success()
+            self.on_login_success(username)
         else:
             messagebox.showerror("Login Failed", "Incorrect username or password.")
 

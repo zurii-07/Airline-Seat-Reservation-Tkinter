@@ -1,55 +1,59 @@
 import tkinter as tk
 from tkinter import messagebox
-from backend.seat_manager import load_bookings, save_booking
+from backend.seat_manager import load_bookings, save_booking, user_bookings
 
 class SeatMapFrame(tk.Frame):
-    def __init__(self, master, flight, on_back):
+    def __init__(self, master, flight, on_back, current_user):
         super().__init__(master)
         self.master = master
         self.master.state("zoomed")
         self.flight = flight
         self.on_back = on_back
+        self.current_user = current_user
         self.pack(fill='both', expand=True)
 
         self.bookings = load_bookings(flight['flight_id'])
 
-        # === Top Navigation ===
         tk.Button(self, text="← Back", command=self.on_back).pack(anchor='nw', pady=5, padx=5)
-
-        title = (f"Flight {flight['flight_id']}  | "
-                 f"{flight['date']} {flight['time']}  | "
+        title = (f"Flight {flight['flight_id']}  | {flight['date']} {flight['time']}  | "
                  f"{flight['origin_airport']} → {flight['dest_airport']}")
         tk.Label(self, text=title, font=("Segoe UI", 16, "bold")).pack(pady=10)
 
-        # === Scrollable Canvas ===
+        from gui.flight_selection_gui import App
         canvas_frame = tk.Frame(self)
         canvas_frame.pack(fill="both", expand=True)
 
         canvas = tk.Canvas(canvas_frame)
         canvas.pack(side="left", fill="both", expand=True)
-
         scrollbar = tk.Scrollbar(canvas_frame, orient="vertical", command=canvas.yview)
         scrollbar.pack(side="right", fill="y")
-
         canvas.configure(yscrollcommand=scrollbar.set)
 
         self.container = tk.Frame(canvas)
         self.container.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
         canvas.create_window((0, 0), window=self.container, anchor="nw")
 
-        # === Centered Horizontal Layout ===
+        # layout wrapper
         self.center_frame = tk.Frame(self.container)
         self.center_frame.pack(pady=10)
-
         self.grid_frame = tk.Frame(self.center_frame)
         self.grid_frame.pack(anchor="center")
-
         self.seat_frame = tk.Frame(self.grid_frame)
         self.seat_frame.pack(side="left", anchor="n", padx=(0, 30))
-
         self.form_frame = None
 
         self.draw_seats()
+
+        # === User bookings panel on RIGHT ===
+        panel = tk.Frame(self.container, bg="#f9f9f9", bd=1, relief="solid")
+        panel.place(relx=0.85, rely=0.3, width=260, height=300, anchor="center")
+        tk.Label(panel, text="Your Bookings", font=("Segoe UI", 12, "bold"), bg=panel["bg"]).pack(pady=5)
+        self.booking_list = tk.Listbox(panel, width=30, height=12)
+        self.booking_list.pack(padx=10, pady=5)
+        for bk in user_bookings(self.current_user):
+            entry = f"{bk['flight_id']} Seat:{bk['seat']} {bk['name']}"
+            self.booking_list.insert(tk.END, entry)
+
 
     def draw_seats(self):
         self.seat_frame.destroy()
