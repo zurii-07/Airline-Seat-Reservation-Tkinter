@@ -59,7 +59,7 @@ class FlightSelectionFrame(tk.Frame):
         self.booking_list.pack(padx=10, pady=5)
         for bk in user_bookings(self.current_user):
             entry = f"{bk['flight_id']} Seat:{bk['seat']} {bk['name']}"
-            self.booking_list.insert(tk.END, entry)
+            self.booking_list.insert(tk.END, f"{bk['flight_id']} | Seat:{bk['seat']} | {bk['name']}")
 
     def update_destinations(self, event=None):
         origin = self.origin_var.get()

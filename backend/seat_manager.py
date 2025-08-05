@@ -1,6 +1,6 @@
 import csv
 import os
-import csv, os
+
 #handles seat availability and bookings
 
 def bookings_path(flight_id):
@@ -21,8 +21,14 @@ def save_booking(flight_id, seat, passenger):
         writer = csv.writer(f)
         if not exists:
             writer.writerow(['seat','name','gender','passport','visa','booked_by'])
-        writer.writerow([seat, passenger['name'], passenger['gender'],
-                         passenger['passport'], passenger['visa'], passenger['booked_by']])
+        writer.writerow([
+            seat,
+            passenger.get('name'),
+            passenger.get('gender'),
+            passenger.get('passport'),
+            passenger.get('visa'),
+            passenger.get('booked_by')  # Should be dynamic!
+        ])
 
 
 def user_bookings(username):
@@ -33,7 +39,7 @@ def user_bookings(username):
             with open(path, newline='', encoding='utf-8') as f:
                 reader = csv.DictReader(f)
                 for row in reader:
-                    if row.get('booked_by') == username:
+                    if row.get('booked_by', '').strip().lower() == username.strip().lower():
                         flight_id = fname.replace("bookings_", "").replace(".csv", "")
                         row['flight_id'] = flight_id
                         bookings.append(row)

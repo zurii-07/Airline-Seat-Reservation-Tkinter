@@ -42,18 +42,18 @@ class SeatMapFrame(tk.Frame):
         self.seat_frame.pack(side="left", anchor="n", padx=(0, 30))
         self.form_frame = None
 
+        # After scrollable area setup:
         self.draw_seats()
 
-        # === User bookings panel on RIGHT ===
-        panel = tk.Frame(self.container, bg="#f9f9f9", bd=1, relief="solid")
-        panel.place(relx=0.85, rely=0.3, width=260, height=300, anchor="center")
+        # === Now add bookings panel anchored on right of master ===
+        panel = tk.Frame(self, bg="#f9f9f9", bd=1, relief="solid")
+        panel.place(relx=0.85, rely=0.2, width=260, height=300, anchor="n")
         tk.Label(panel, text="Your Bookings", font=("Segoe UI", 12, "bold"), bg=panel["bg"]).pack(pady=5)
         self.booking_list = tk.Listbox(panel, width=30, height=12)
         self.booking_list.pack(padx=10, pady=5)
         for bk in user_bookings(self.current_user):
-            entry = f"{bk['flight_id']} Seat:{bk['seat']} {bk['name']}"
+            entry = f"{bk['flight_id']} | Seat:{bk['seat']} | {bk['name']}"
             self.booking_list.insert(tk.END, entry)
-
 
     def draw_seats(self):
         self.seat_frame.destroy()
@@ -165,7 +165,7 @@ class SeatMapFrame(tk.Frame):
                 "gender": gender,
                 "passport": passport,
                 "visa": visa,
-                "booked_by": "current_user"
+                "booked_by": self.current_user
             }
 
             save_booking(self.flight['flight_id'], seat_id, passenger)
@@ -179,3 +179,5 @@ class SeatMapFrame(tk.Frame):
                   bg="#28a745", fg="white", width=20).grid(
             row=5, column=0, columnspan=2, pady=10
         )
+
+
