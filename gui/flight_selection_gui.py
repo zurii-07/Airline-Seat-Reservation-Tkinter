@@ -61,6 +61,10 @@ class FlightSelectionFrame(tk.Frame):
             entry = f"{bk['flight_id']} Seat:{bk['seat']} {bk['name']}"
             self.booking_list.insert(tk.END, f"{bk['flight_id']} | Seat:{bk['seat']} | {bk['name']}")
 
+        exit_btn = tk.Button(self, text="Exit", bg="#d9534f", fg="white", font=("Segoe UI", 10, "bold"),
+                             command=self.master.quit)
+        exit_btn.place(relx=1.0, rely=1.0, x=-20, y=-20, anchor="se")
+
     def update_destinations(self, event=None):
         origin = self.origin_var.get()
         dests = sorted({f['dest_country'] for f in self.flights if f['origin_country'] == origin})

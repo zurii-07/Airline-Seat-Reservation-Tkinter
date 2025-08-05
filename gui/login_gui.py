@@ -61,6 +61,11 @@ class LoginWindow:
         self.canvas.create_window(center_x - 60, center_y + 40, window=btn_login)
         self.canvas.create_window(center_x + 60, center_y + 40, window=btn_register)
 
+        exit_btn = tk.Button(root, text="Exit", bg="#d9534f", fg="white", font=("Segoe UI", 10, "bold"),
+                             command=root.quit)
+        self.canvas.create_window(self.root.winfo_screenwidth() - 80, self.root.winfo_screenheight() - 40, anchor="se",
+                                  window=exit_btn)
+
     def load_images(self):
         assets_dir = os.path.join(os.path.dirname(__file__), '..', 'assets')
         return glob.glob(os.path.join(assets_dir, '*.jpg'))

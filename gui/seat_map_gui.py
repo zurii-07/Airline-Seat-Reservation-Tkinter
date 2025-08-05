@@ -55,6 +55,10 @@ class SeatMapFrame(tk.Frame):
             entry = f"{bk['flight_id']} | Seat:{bk['seat']} | {bk['name']}"
             self.booking_list.insert(tk.END, entry)
 
+        exit_btn = tk.Button(self, text="Exit", bg="#d9534f", fg="white", font=("Segoe UI", 10, "bold"),
+                             command=self.master.quit)
+        exit_btn.place(relx=1.0, rely=1.0, x=-20, y=-20, anchor="se")
+
     def draw_seats(self):
         self.seat_frame.destroy()
         self.seat_frame = tk.Frame(self.grid_frame)
