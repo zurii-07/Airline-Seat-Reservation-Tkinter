@@ -47,6 +47,7 @@ This project simulates a real-world airline booking system, allowing users to:
 
 ## 🗂️ Project Structure
 
+```bash
 airline_seat_reservation/
 ├── main.py                  # Launcher
 ├── gui/
@@ -65,7 +66,7 @@ airline_seat_reservation/
 │   └── 4K2.jpg, SriLankan-Airlines-Airbus.jpg, Window.jpg, Wing-1.jpg
 ├── assets 2/
 │   └── NewUser.jpg, FlightSelection.jpg, seat_bg.jpg
-
+```
 
 
 ---
@@ -113,7 +114,7 @@ python main.py
 
 ### 🧑‍🎓 Author
 
-Surakkitha Galappaththi – [LinkedIn](www.linkedin.com/in/surakkitha-galappaththi-001588290)
+Surakkitha Galappaththi – [LinkedIn](https://www.linkedin.com/in/surakkitha-galappaththi-001588290)
 Data Science | AI Engineer | Python Enthusiast
 Email: surakkithag@gmail.com
 
