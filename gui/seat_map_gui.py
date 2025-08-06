@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
 from backend.seat_manager import load_bookings, save_booking, user_bookings
+from PIL import Image, ImageTk
+import os
 
 #GUI to display airplane seat layout, to allow seat selection,
 #booking, and show existing user bookings.
@@ -14,8 +16,13 @@ class SeatMapFrame(tk.Frame):
         self.current_user = current_user
         self.pack(fill='both', expand=True)
 
-        #Load existing seat bookings for this flight
-        self.bookings = load_bookings(flight['flight_id'])
+        #Background Image
+        bg_path = os.path.join(os.path.dirname(__file__), '..', 'assets 2', 'seat_bg.jpg')
+        bg_image = Image.open(bg_path)
+        bg_image = bg_image.resize((self.master.winfo_screenwidth(), self.master.winfo_screenheight()), Image.Resampling.LANCZOS)
+        self.bg_photo = ImageTk.PhotoImage(bg_image)
+        bg_label = tk.Label(self, image=self.bg_photo)
+        bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
         # Back button
         tk.Button(self, text="<--Back", command=self.on_back).pack(anchor='nw', pady=5, padx=5)
@@ -25,28 +32,20 @@ class SeatMapFrame(tk.Frame):
                  f"{flight['origin_airport']} → {flight['dest_airport']}")
         tk.Label(self, text=title, font=("Segoe UI", 16, "bold")).pack(pady=10)
 
-        #Scrollable Canvas for Seat Layout
-        canvas_frame = tk.Frame(self)
-        canvas_frame.pack(fill="both", expand=True)
+        #Load existing seat bookings for this flight
+        self.bookings = load_bookings(flight['flight_id'])
 
-        canvas = tk.Canvas(canvas_frame)
-        canvas.pack(side="left", fill="both", expand=True)
-        scrollbar = tk.Scrollbar(canvas_frame, orient="vertical", command=canvas.yview)
-        scrollbar.pack(side="right", fill="y")
-        canvas.configure(yscrollcommand=scrollbar.set)
+        #Main layout frames
+        self.center_frame = tk.Frame(self)
+        self.center_frame.pack(expand=True, pady=10)
 
-        self.container = tk.Frame(canvas)
-        self.container.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-        canvas.create_window((0, 0), window=self.container, anchor="nw")
-
-        #Frame wrappers for layout
-        self.center_frame = tk.Frame(self.container)
-        self.center_frame.pack(pady=10)
         self.grid_frame = tk.Frame(self.center_frame)
         self.grid_frame.pack(anchor="center")
+
         self.seat_frame = tk.Frame(self.grid_frame)
         self.seat_frame.pack(side="left", anchor="n", padx=(0, 30))
-        self.form_frame = None # Seat booking form
+
+        self.form_frame = None
 
         self.draw_seats() #Render seat layout
 

@@ -56,7 +56,7 @@ class FlightSelectionFrame(tk.Frame):
         ttk.Button(container, text="Continue", command=self.continue_pressed).pack(pady=(0, 10))
 
         #Back button in top-left
-        ttk.Button(self, text="← Back", command=self.on_back).place(x=10, y=10)
+        ttk.Button(self, text="<--Back", command=self.on_back).place(x=10, y=10)
 
         #Bind dropdown selection changes to update destination and flights
         self.origin_combo.bind("<<ComboboxSelected>>", self.update_destinations)
