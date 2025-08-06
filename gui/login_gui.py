@@ -36,13 +36,30 @@ class LoginWindow:
         center_x = self.root.winfo_screenwidth() // 2
         center_y = self.root.winfo_screenheight() // 2
 
-        #App title text
-        self.canvas.create_text(center_x, center_y - 150,
-                                text="Welcome to FlightForge Airline Seat Reservations",
-                                font=font_title, fill="white")
+        # Title with highlighted "FlightForge"
+        title_y = center_y - 150
+        welcome = "Welcome to "
+        brand = "FlightForge"
+        suffix = " Airline Seat Reservations"
+
+        dummy1 = self.canvas.create_text(0, 0, text=welcome, font=font_title)
+        dummy2 = self.canvas.create_text(0, 0, text=brand, font=font_title)
+        dummy3 = self.canvas.create_text(0, 0, text=suffix, font=font_title)
+
+        w1 = self.canvas.bbox(dummy1)[2] - self.canvas.bbox(dummy1)[0]
+        w2 = self.canvas.bbox(dummy2)[2] - self.canvas.bbox(dummy2)[0]
+        w3 = self.canvas.bbox(dummy3)[2] - self.canvas.bbox(dummy3)[0]
+        total_w = w1 + w2 + w3
+        start_x = center_x - total_w // 2
+
+        self.canvas.delete(dummy1, dummy2, dummy3)
+
+        self.canvas.create_text(start_x, title_y, text=welcome, font=font_title, fill="white", anchor="nw")
+        self.canvas.create_text(start_x + w1, title_y, text=brand, font=font_title, fill="#FFD700", anchor="nw")
+        self.canvas.create_text(start_x + w1 + w2, title_y, text=suffix, font=font_title, fill="white", anchor="nw")
 
         #Username Field with Label Background
-        self.canvas.create_rectangle(center_x - 200, center_y - 65,
+        self.canvas.create_rectangle(center_x - 210, center_y - 65,
                                      center_x - 50, center_y - 35,
                                      fill="white", outline="")
         self.username_entry = tk.Entry(root, font=font_label, width=28)
@@ -52,7 +69,7 @@ class LoginWindow:
                                   window=self.username_entry, anchor="w")
 
         #Password Field with Label Background
-        self.canvas.create_rectangle(center_x - 200, center_y - 25,
+        self.canvas.create_rectangle(center_x - 210, center_y - 25,
                                      center_x - 50, center_y + 5,
                                      fill="white", outline="")
         self.password_entry = tk.Entry(root, show="*", font=font_label, width=28)
