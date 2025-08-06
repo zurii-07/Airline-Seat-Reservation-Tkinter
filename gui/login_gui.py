@@ -147,7 +147,7 @@ class LoginWindow:
         reg_window.resizable(False, False)
 
         #Background image for the registration form
-        bg_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets 2', 'Shield.jpg')
+        bg_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets 2', 'NewUser.jpg')
         bg_img = Image.open(bg_image_path)
         bg_img = bg_img.resize((900, 500), Image.Resampling.LANCZOS)
         bg_photo = ImageTk.PhotoImage(bg_img)
