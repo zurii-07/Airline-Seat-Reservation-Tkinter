@@ -1,40 +1,51 @@
-✈️ FlightForge: Airline Seat Reservation System
+# ✈️ FlightForge: Airline Seat Reservation System
 
-A Python-based GUI system for airline seat reservations across 193 countries and 386+ global flight routes — built with Tkinter, CSV data handling, and dynamic seat visualization.
+A Python-based GUI system for airline seat reservations across **193 countries** and **386+ global flight routes** — built with **Tkinter**, **CSV** data handling, and dynamic seat visualization.
 
-🚀 Overview
+---
+
+## 🚀 Overview
+
 This project simulates a real-world airline booking system, allowing users to:
 
-🔐 Register & log in as passengers.
-🌍 Select flights by origin/destination country.
-🎫 View upcoming flights within 7 days.
-💺 Book available seats from a visual seat map.
-📄 Fill in passenger details (Name, Gender, Passport, Visa).
-🧾 Track booking history by user.
+- 🔐 Register & log in as passengers  
+- 🌍 Select flights by origin/destination country  
+- 🎫 View upcoming flights within 7 days  
+- 💺 Book available seats from a visual seat map  
+- 📄 Fill in passenger details (Name, Gender, Passport, Visa)  
+- 🧾 Track booking history by user  
 
+---
 
-🧠 Features
+## 🧠 Features
 
-1.Tkinter GUI with slideshow backgrounds, blurred form effects.
-2.Multi-user authentication with CSV-based login/register system.
-3.193×2 = 386+ flights generated weekly using airport data.
-4.Seat Map Layout: 9×20 grid with cockpit, windows, lavatory.
-5.Gender-based indicators: 🔴 Male, 🩷 Female, 🟢 Available.
-6.Booking form integration below seat map or side panel.
-7.Scroll-enabled seat interface.
-8.Real-time booking status (no double-booking).
-9.User-specific booking history panel.
+1. 🎨 Tkinter GUI with slideshow backgrounds & blurred form effects  
+2. 👥 Multi-user authentication with CSV-based login/register system  
+3. 🌐 193×2 = **386+ flights** generated weekly using airport data  
+4. 🪑 Seat Map Layout: 9×20 grid with cockpit, windows, lavatory  
+5. 🎨 Gender-based seat indicators:
+   - 🔴 Male
+   - 🩷 Female
+   - 🟢 Available  
+6. 📝 Booking form integration (below seat map or side panel)  
+7. 🧾 Real-time booking updates & no double-booking  
+8. 🧳 User-specific booking history side panel  
+9. 🔄 Scroll-enabled seat layout (optional for future enhancements)  
 
+---
 
-🧰 Tech Stack
+## 🧰 Tech Stack
 
-Python 3.13 - Core Programming Language
-Tkinter - GUI Framework
-CSV	- Persistent Storage
-Pillow	- Image Processing (slideshow)
+| Tool      | Description               |
+|-----------|---------------------------|
+| **Python 3.13** | Core Programming Language |
+| **Tkinter**     | GUI Framework              |
+| **CSV**         | Persistent storage backend |
+| **Pillow**      | Background image slideshow |
 
+---
 
-🗂️ Project Structure
+## 🗂️ Project Structure
 
 airline_seat_reservation/
 ├── main.py                  # Launcher
@@ -56,7 +67,10 @@ airline_seat_reservation/
 │   └── NewUser.jpg, FlightSelection.jpg, seat_bg.jpg
 
 
-📸 Screenshots
+
+---
+
+## 📸 Screenshots
 
 ### 🔐 Login Page
 ![Login](screenshots/Login%20Page.png)
@@ -67,34 +81,42 @@ airline_seat_reservation/
 ### 🪑 Seat Map Interface
 ![Seat Map](screenshots/Seat%20Map%20GUI.png)
 
+---
 
-📦 Installation & Run
+## 📦 Installation & Run
 
-1.✅ Clone the repo
+### 1. ✅ Clone the repo
 
+```bash
 git clone https://github.com/zurii-07/Airline-Seat-Reservation-Tkinter.git
 cd Airline-Seat-Reservation-Tkinter
+```
 
-2.📦 Create Virtual Env (optional)
+### 2.📦 Create Virtual Env (optional)
 
+```bash
 python -m venv .venv
 source .venv/bin/activate  # or .venv\Scripts\activate
+```
 
-3.💡 Install dependencies
+### 3.💡 Install dependencies
 
+```bash
 pip install -r requirements.txt
+```
 
-4.🧨 Run the App
+### 4.🧨 Run the App
 
+```bash
 python main.py
+```
 
-
-🧑‍🎓 Author
+### 🧑‍🎓 Author
 
 Surakkitha Galappaththi – [LinkedIn](www.linkedin.com/in/surakkitha-galappaththi-001588290)
 Data Science | AI Engineer | Python Enthusiast
 Email: surakkithag@gmail.com
 
-📄 License
+### 📄 License
 
 MIT License
