@@ -1,0 +1,2 @@
+seat,name,gender,passport,visa,booked_by
+C12,kim,M,4354545,5454242,current_user

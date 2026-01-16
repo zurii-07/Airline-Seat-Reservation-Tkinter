@@ -1,0 +1,221 @@
+import tkinter as tk
+from tkinter import messagebox
+from backend import user_manager
+from PIL import Image, ImageTk
+import os
+import glob
+
+
+#GUI for login and registration of users.
+#Includes rotating background images and styled login/registration forms.
+class LoginWindow:
+    def __init__(self, root, on_login_success):
+        self.root = root
+        self.on_login_success = on_login_success
+        self.root.title("Airline Reservation Login")
+        self.root.state("zoomed")
+        self.root.update_idletasks()
+
+        #Load rotating background images
+        self.bg_images = self.load_images()
+        self.bg_index = 0
+        self.bg_callback_id = None
+
+        #Canvas for placing UI elements and images
+        self.canvas = tk.Canvas(root, highlightthickness=0)
+        self.canvas.pack(fill="both", expand=True)
+        self.bg_label = self.canvas.create_image(0, 0, anchor="nw")
+        self.update_background()
+
+        #Font styles
+        font_title = ("Segoe UI", 24, "bold")
+        font_label = ("Segoe UI", 13, "bold")
+        font_button = ("Segoe UI", 11, "bold")
+
+        #Get screen center
+        center_x = self.root.winfo_screenwidth() // 2
+        center_y = self.root.winfo_screenheight() // 2
+
+        # Title with highlighted "FlightForge"
+        title_y = center_y - 150
+        welcome = "Welcome to "
+        brand = "FlightForge"
+        suffix = " Airline Seat Reservations"
+
+        dummy1 = self.canvas.create_text(0, 0, text=welcome, font=font_title)
+        dummy2 = self.canvas.create_text(0, 0, text=brand, font=font_title)
+        dummy3 = self.canvas.create_text(0, 0, text=suffix, font=font_title)
+
+        w1 = self.canvas.bbox(dummy1)[2] - self.canvas.bbox(dummy1)[0]
+        w2 = self.canvas.bbox(dummy2)[2] - self.canvas.bbox(dummy2)[0]
+        w3 = self.canvas.bbox(dummy3)[2] - self.canvas.bbox(dummy3)[0]
+        total_w = w1 + w2 + w3
+        start_x = center_x - total_w // 2
+
+        self.canvas.delete(dummy1, dummy2, dummy3)
+
+        self.canvas.create_text(start_x, title_y, text=welcome, font=font_title, fill="white", anchor="nw")
+        self.canvas.create_text(start_x + w1, title_y, text=brand, font=font_title, fill="#FFD700", anchor="nw")
+        self.canvas.create_text(start_x + w1 + w2, title_y, text=suffix, font=font_title, fill="white", anchor="nw")
+
+        #Username Field with Label Background
+        self.canvas.create_rectangle(center_x - 210, center_y - 65,
+                                     center_x - 50, center_y - 35,
+                                     fill="white", outline="")
+        self.username_entry = tk.Entry(root, font=font_label, width=28)
+        self.canvas.create_text(center_x - 120, center_y - 50,
+                                text="Username:", font=font_label, fill="#000000", anchor="e")
+        self.canvas.create_window(center_x + 10, center_y - 50,
+                                  window=self.username_entry, anchor="w")
+
+        #Password Field with Label Background
+        self.canvas.create_rectangle(center_x - 210, center_y - 25,
+                                     center_x - 50, center_y + 5,
+                                     fill="white", outline="")
+        self.password_entry = tk.Entry(root, show="*", font=font_label, width=28)
+        self.canvas.create_text(center_x - 120, center_y - 10,
+                                text="Password:", font=font_label, fill="#000000", anchor="e")
+        self.canvas.create_window(center_x + 10, center_y - 10,
+                                  window=self.password_entry, anchor="w")
+
+        #Login and Register Buttons
+        btn_login = tk.Button(root, text="Login", font=font_button, width=12,
+                              command=self.login, bg="#2E86C1", fg="white")
+        btn_register = tk.Button(root, text="Register", font=font_button, width=12,
+                                 command=self.open_registration, bg="#117A65", fg="white")
+        self.canvas.create_window(center_x - 60, center_y + 40, window=btn_login)
+        self.canvas.create_window(center_x + 60, center_y + 40, window=btn_register)
+
+        #Exit button in bottom-right corner
+        exit_btn = tk.Button(root, text="Exit", bg="#d9534f", fg="white", font=("Segoe UI", 10, "bold"),
+                             command=root.quit)
+        self.canvas.create_window(self.root.winfo_screenwidth() - 80, self.root.winfo_screenheight() - 40, anchor="se",
+                                  window=exit_btn)
+
+    #Load all JPG images from the 'assets' folder for the background
+    def load_images(self):
+        assets_dir = os.path.join(os.path.dirname(__file__), '..', 'assets')
+        return glob.glob(os.path.join(assets_dir, '*.jpg'))
+
+    #Function to switch background images every few seconds
+    def update_background(self):
+        if not self.bg_images:
+            return
+        image_path = self.bg_images[self.bg_index]
+        img = Image.open(image_path)
+        width = self.root.winfo_width()
+        height = self.root.winfo_height()
+        img = img.resize((width, height), Image.Resampling.LANCZOS)
+        self.bg_photo = ImageTk.PhotoImage(img)
+        self.canvas.itemconfig(self.bg_label, image=self.bg_photo)
+        self.canvas.tag_lower(self.bg_label)
+
+        #Move to next image in the list
+        self.bg_index = (self.bg_index + 1) % len(self.bg_images)
+        self.bg_callback_id = self.canvas.after(4000, self.update_background)
+
+    #Called when the Login button is pressed
+    def login(self):
+        username = self.username_entry.get()
+        password = self.password_entry.get()
+
+        if not username or not password:
+            messagebox.showwarning("Missing Fields", "Please enter both username and password.")
+            return
+
+        if user_manager.authenticate_user(username, password):
+            messagebox.showinfo("Login Successful", f"Welcome {username}!")
+
+            #Stop background image cycling before closing window
+            try:
+                if self.bg_callback_id:
+                    self.canvas.after_cancel(self.bg_callback_id)
+            except Exception:
+                pass
+
+            self.root.quit()
+            self.root.destroy()
+            self.on_login_success(username) #Pass username to next window
+        else:
+            messagebox.showerror("Login Failed", "Incorrect username or password.")
+
+    #Opens the registration window
+    def open_registration(self):
+        reg_window = tk.Toplevel(self.root)
+        reg_window.title("Register New User")
+        reg_window.geometry("900x500")
+        reg_window.resizable(False, False)
+
+        #Background image for the registration form
+        bg_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets 2', 'NewUser.jpg')
+        bg_img = Image.open(bg_image_path)
+        bg_img = bg_img.resize((900, 500), Image.Resampling.LANCZOS)
+        bg_photo = ImageTk.PhotoImage(bg_img)
+
+        #Canvas for form layout
+        bg_canvas = tk.Canvas(reg_window, width=900, height=500, highlightthickness=0)
+        bg_canvas.pack(fill="both", expand=True)
+        bg_canvas.create_image(0, 0, anchor="nw", image=bg_photo)
+        reg_window.bg_photo = bg_photo
+
+        #Font styles
+        font_label = ("Segoe UI", 13, "bold")
+        font_entry = ("Segoe UI", 12)
+        font_button = ("Segoe UI", 11, "bold")
+
+        #Layout constants
+        entry_width = 30
+        label_color = "#ffffff"
+        field_y_start = 120
+        field_spacing = 50
+        x_label = 240
+        x_entry = 400
+
+        #Helper to place labels
+        def create_label(text, y):
+            return bg_canvas.create_text(x_label, y, text=text, font=font_label, fill=label_color, anchor="e")
+
+        #Helper to create entry fields
+        def create_entry(y):
+            entry = tk.Entry(reg_window, font=font_entry, width=entry_width, bd=2, relief="groove")
+            bg_canvas.create_window(x_entry, y, window=entry, anchor="w")
+            return entry
+
+        #Entry fields
+        create_label("Username:", field_y_start)
+        username_entry = create_entry(field_y_start)
+
+        create_label("Password:", field_y_start + field_spacing)
+        password_entry = tk.Entry(reg_window, font=font_entry, show="*", width=entry_width, bd=2, relief="groove")
+        bg_canvas.create_window(x_entry, field_y_start + field_spacing, window=password_entry, anchor="w")
+
+        create_label("Full Name:", field_y_start + 2 * field_spacing)
+        fullname_entry = create_entry(field_y_start + 2 * field_spacing)
+
+        create_label("Email:", field_y_start + 3 * field_spacing)
+        email_entry = create_entry(field_y_start + 3 * field_spacing)
+
+        #Handle Register button click
+        def register():
+            username = username_entry.get()
+            password = password_entry.get()
+            fullname = fullname_entry.get()
+            email = email_entry.get()
+
+            if not all([username, password, fullname, email]):
+                messagebox.showwarning("Missing Info", "All fields are required.")
+                return
+
+            success, message = user_manager.register_user(username, password, fullname, email)
+            if success:
+                messagebox.showinfo("Registration", message)
+                reg_window.destroy()
+            else:
+                messagebox.showerror("Registration Failed", message)
+
+        #Register button
+        register_btn = tk.Button(reg_window, text="Register", font=font_button, width=15,
+                                 command=register, bg="#28a745", fg="white", relief="flat", bd=0,
+                                 highlightthickness=1, highlightbackground="#1e7e34", cursor="hand2")
+        bg_canvas.create_window(x_entry + 60, field_y_start + 4 * field_spacing + 20,
+                                window=register_btn, anchor="w")
